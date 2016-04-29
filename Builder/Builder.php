@@ -126,7 +126,16 @@ class Builder {
 		$metadata = $this->loader->load($class);
 		$values = array();
 		foreach ($metadata as $name => $meta) {
-			$values[$name] = $this->getMapper($meta)->toPropertyValue($form[$name], $meta);
+			switch (true) {
+				case $form[$name] instanceof \Nette\Forms\FormControl:
+					$values[$name] = $this->getMapper($meta)->toPropertyValue($form[$name], $meta);
+					break;
+				case $form[$name] instanceof \Nette\Forms\FormContainer:
+					$values[$name] = $this->getMapper($meta)->toPropertyValues($form[$name], $meta);
+					break;
+				default:
+					throw new \LogicException("Unsupported type of `$name' control.");
+			}
 		}
 		if ($form->hasErrors()) {
 			return null;
