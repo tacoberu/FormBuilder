@@ -94,6 +94,15 @@ class AnnotationLoader implements ILoader {
 			}
 			$meta->custom = $input;
 		}
+
+		if ($meta->getter && ! method_exists($property->class, $meta->getter)) {
+			$meta->getter = null;
+		}
+
+		if ($meta->setter && ! method_exists($property->class, $meta->setter)) {
+			$meta->setter = null;
+		}
+
 		return $meta;
 	}
 

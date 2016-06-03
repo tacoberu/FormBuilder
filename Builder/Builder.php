@@ -103,8 +103,9 @@ class Builder {
 			}
 		} else {
 			foreach ($metadata as $meta) {
-				$getter = $meta->getter;
-				$formated[$meta->name] = $this->getMapper($meta)->toControlValue($values->$getter(), $meta);
+				if ($getter = $meta->getter) {
+					$formated[$meta->name] = $this->getMapper($meta)->toControlValue($values->$getter(), $meta);
+				}
 			}
 		}
 		return $formated;
@@ -157,8 +158,9 @@ class Builder {
 		}
 
 		foreach ($values as $name => $value) {
-			$setter = $metadata[$name]->setter;
-			$entity->$setter($value);
+			if ($setter = $metadata[$name]->setter) {
+				$entity->$setter($value);
+			}
 		}
 
 		return $entity;
