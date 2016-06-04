@@ -68,6 +68,18 @@ class Builder {
 	public function build($entity) {
 		$form = new EntityForm($this);
 		$metadata = $this->loader->load(is_object($entity) ? get_class($entity) : $entity);
+
+		list($groups, $metadata) = self::splitByGroups($metadata);
+		if (count($groups)) {
+			foreach ($groups as $groupname => $group) {
+				$form->addGroup($groupname);
+				foreach ($group as $meta) {
+					$this->getMapper($meta)->addFormControl($form, $meta);
+				}
+			}
+			$form->setCurrentGroup();
+		}
+
 		foreach ($metadata as $meta) {
 			$this->getMapper($meta)->addFormControl($form, $meta);
 		}
@@ -190,4 +202,24 @@ class Builder {
 	public function addMapper($name, $mapper) {
 		$this->mapperContainer->addService($name, $mapper);
 	}
+
+	private static function splitByGroups(array $metadata) {
+		$groups = [];
+		$withoutgroups = [];
+		foreach ($metadata as $key => $item) {
+			if (isset($item->custom['group'])) {
+				$name = $item->custom['group'];
+				if ( ! isset($groups[$name])) {
+					$groups[$name] = [];
+				}
+
+				$groups[$name][$key] = $item;
+			}
+			else {
+				$withoutgroups[$key] = $item;
+			}
+		}
+		return [$groups, $withoutgroups];
+	}
+
 }
