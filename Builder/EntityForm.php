@@ -38,6 +38,9 @@ class EntityForm extends \Nette\Application\AppForm {
 	/** @var Builder */
 	private $builder;
 
+	/** @var object */
+	private $orig = null;
+
 	/**
 	 * @param Builder $builder
 	 */
@@ -53,8 +56,16 @@ class EntityForm extends \Nette\Application\AppForm {
 	 * @return EntityForm provides a fluent interface
 	 */
 	public function setDefaults($values, $erase = FALSE) {
+		$this->orig = $values;
 		$values = $this->builder->formatForFrom($this, $values);
 		return parent::setDefaults($values, $erase);
+	}
+
+	/**
+	 * @return object
+	 */
+	public function getOriginal() {
+		return $this->orig;
 	}
 
 	/**

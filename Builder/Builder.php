@@ -154,14 +154,27 @@ class Builder {
 			return null;
 		}
 
+		$original = $form->getOriginal();
 		if (!$entity) {
 			$ref = new \ReflectionClass($class);
 			$entity = null;
 			if ($ref->hasMethod('__construct')) {
 				$args = array();
 				foreach ($ref->getMethod('__construct')->getParameters() as $param) {
-					$args[] = $values[$param->getName()];
-					unset($values[$param->getName()]);
+					if (isset($values[$param->getName()])) {
+						$args[] = $values[$param->getName()];
+						unset($values[$param->getName()]);
+					} elseif ($original) {
+						// budeme předpokládat, že když už spoléháme na magii, takže tam je alespoň ten getter.
+						$getter = 'get' . ucfirst($param->getName());
+						if (method_exists($original, $getter)) {
+							$args[] = $original->$getter();
+						} else {
+							throw new \LogicException("Cannot make instance of '{$class}'. Missing getter whitch name must correlate with name of param of constructor: '{$param->getName()}'.");
+						}
+					} else {
+						throw new \LogicException("Cannot make instance of '{$class}'. Missing data for param of constructor: '{$param->getName()}'.");
+					}
 				}
 				$entity = $ref->newInstanceArgs($args);
 			} else {
@@ -169,6 +182,21 @@ class Builder {
 			}
 		}
 
+		// Překopírovat data ze setterů originálu.
+		if ($original) {
+			$ref = new \ReflectionClass($original);
+			foreach ($ref->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+				if (strncmp($method->getName(), 'get', 3) === 0) {
+					$getter = $method->getName();
+					$setter = 'set' . ucfirst(substr($method->getName(), 3));
+					if (method_exists($original, $setter)) {
+						$entity->$setter($original->$getter());
+					}
+				}
+			}
+		}
+
+		// Nastavit hodnoty z formuláře.
 		foreach ($values as $name => $value) {
 			if ($setter = $metadata[$name]->setter) {
 				$entity->$setter($value);
