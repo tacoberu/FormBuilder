@@ -158,6 +158,8 @@ class Builder {
 		}
 
 		$original = $form->getOriginal();
+		$uses = [];
+
 		if (!$entity) {
 			$ref = new \ReflectionClass($class);
 			$entity = null;
@@ -165,13 +167,14 @@ class Builder {
 				$args = array();
 				foreach ($ref->getMethod('__construct')->getParameters() as $param) {
 					if (isset($values[$param->getName()])) {
-						$args[] = $values[$param->getName()];
+						$args[$param->getName()] = $values[$param->getName()];
 						unset($values[$param->getName()]);
+						$uses[] = strtolower($param->getName());
 					} elseif ($original) {
 						// budeme předpokládat, že když už spoléháme na magii, takže tam je alespoň ten getter.
 						$getter = 'get' . ucfirst($param->getName());
 						if (method_exists($original, $getter)) {
-							$args[] = $original->$getter();
+							$args[$param->getName()] = $original->$getter();
 						} else {
 							throw new \LogicException("Cannot make instance of '{$class}'. Missing getter whitch name must correlate with name of param of constructor: '{$param->getName()}'.");
 						}
@@ -190,7 +193,9 @@ class Builder {
 		if ($original) {
 			$ref = new \ReflectionClass($original);
 			foreach ($ref->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-				if (strncmp($method->getName(), 'get', 3) === 0) {
+				if ((strncmp($method->getName(), 'get', 3) === 0)
+						&& ( ! in_array(strtolower(substr($method->getName(), 3)), $uses))
+						) {
 					$getter = $method->getName();
 					$setter = 'set' . ucfirst(substr($method->getName(), 3));
 					if (method_exists($original, $setter)) {
