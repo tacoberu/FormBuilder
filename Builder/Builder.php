@@ -176,7 +176,8 @@ class Builder {
 							throw new \LogicException("Cannot make instance of '{$class}'. Missing getter whitch name must correlate with name of param of constructor: '{$param->getName()}'.");
 						}
 					} else {
-						throw new \LogicException("Cannot make instance of '{$class}'. Missing data for param of constructor: '{$param->getName()}'.");
+						$args[$param->getName()] = null;
+						//~ throw new \LogicException("Cannot make instance of '{$class}'. Missing data for param of constructor: '{$param->getName()}'.");
 					}
 				}
 				$entity = $ref->newInstanceArgs($args);
