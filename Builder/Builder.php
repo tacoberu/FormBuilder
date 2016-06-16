@@ -102,6 +102,9 @@ class Builder {
 	 * @return array
 	 */
 	public function formatForFrom(EntityForm $form, $values) {
+		if (empty($values)) {
+			return [];
+		}
 		$entity = $this->entities[$form];
 		$metadata = $this->loader->load(is_object($entity) ? get_class($entity) : $entity);
 		$formated = array();
