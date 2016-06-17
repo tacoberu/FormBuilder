@@ -158,6 +158,13 @@ class Builder {
 		}
 
 		$original = $form->getOriginal();
+
+		// Skrze setDefaults() nepředal objekt, ale pole
+		if (is_array($original)) {
+			$values = array_merge($original, $values);
+			$original = null;
+		}
+
 		$uses = [];
 
 		if (!$entity) {
