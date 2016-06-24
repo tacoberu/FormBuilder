@@ -173,7 +173,7 @@ class Builder {
 			if ($ref->hasMethod('__construct')) {
 				$args = array();
 				foreach ($ref->getMethod('__construct')->getParameters() as $param) {
-					if (isset($values[$param->getName()])) {
+					if (array_key_exists($param->getName(), $values)) {
 						$args[$param->getName()] = $values[$param->getName()];
 						unset($values[$param->getName()]);
 						$uses[] = strtolower($param->getName());
