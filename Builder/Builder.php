@@ -214,7 +214,7 @@ class Builder {
 
 		// Nastavit hodnoty z formuláře.
 		foreach ($values as $name => $value) {
-			if ($setter = $metadata[$name]->setter) {
+			if (isset($metadata[$name]) && $setter = $metadata[$name]->setter) {
 				$entity->$setter($value);
 			}
 		}
