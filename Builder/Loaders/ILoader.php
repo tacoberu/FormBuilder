@@ -31,6 +31,8 @@ namespace Vodacek\Form\Builder\Loaders;
 use Vodacek\Form\Builder;
 
 /**
+ * Interface for metadata loader.
+ *
  * @author Ondřej Vodáček <ondrej.vodacek@gmail.com>
  * @copyright 2011, Ondřej Vodáček
  * @license New BSD License

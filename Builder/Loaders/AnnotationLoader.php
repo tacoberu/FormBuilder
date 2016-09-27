@@ -31,6 +31,8 @@ namespace Vodacek\Form\Builder\Loaders;
 use Vodacek\Form\Builder;
 
 /**
+ * Loader using @Input annotations.
+ *
  * @author Ondřej Vodáček
  */
 class AnnotationLoader implements ILoader {

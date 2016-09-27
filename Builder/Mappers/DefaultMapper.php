@@ -31,6 +31,8 @@ namespace Vodacek\Form\Builder\Mappers;
 use Vodacek\Form\Builder;
 
 /**
+ * Default mapper, adds a text input and sets conditions to the control.
+ *
  * @author Ondřej Vodáček <ondrej.vodacek@gmail.com>
  * @copyright 2011, Ondřej Vodáček
  * @license New BSD License
@@ -49,6 +51,9 @@ class DefaultMapper implements IMapper {
 	}
 
 	/**
+	 * Add default conditions.
+	 * Supports: required, min/maxLength, min, max
+	 *
 	 * @param \Nette\Forms\FormControl $input
 	 * @param array $conditions
 	 */

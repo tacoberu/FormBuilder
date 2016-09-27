@@ -31,6 +31,9 @@ namespace Vodacek\Form\Builder\Mappers;
 use Vodacek\Form\Builder;
 
 /**
+ * An abstract class for adding a selectbox. Just extend this class and
+ * implement the getValues method.
+ *
  * @author Ondřej Vodáček <ondrej.vodacek@gmail.com>
  * @copyright 2011, Ondřej Vodáček
  * @license New BSD License
@@ -49,6 +52,8 @@ abstract class SelectboxMapper extends DefaultMapper {
 	}
 
 	/**
+	 * Returns values used in the selectbox.
+	 *
 	 * @return array
 	 */
 	abstract protected function getValues();

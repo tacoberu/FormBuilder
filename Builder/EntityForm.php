@@ -29,6 +29,8 @@
 namespace Vodacek\Form\Builder;
 
 /**
+ * Extended Nette Form with automated entity - form values conversion.
+ *
  * @author Ondřej Vodáček <ondrej.vodacek@gmail.com>
  * @copyright 2011, Ondřej Vodáček
  * @license New BSD License
@@ -51,6 +53,7 @@ class EntityForm extends \Nette\Application\AppForm {
 
 	/**
 	 * Fill-in with default values.
+	 *
 	 * @param  array|Traversable|object $values
 	 * @param  bool $erase erase other default values?
 	 * @return EntityForm provides a fluent interface
