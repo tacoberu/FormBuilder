@@ -5,8 +5,6 @@
 
 namespace Vodacek\Form\Builder;
 
-require_once __dir__ . '/../Utils/LimitedScope.php';
-
 use PHPUnit_Framework_TestCase;
 use Vodacek\Form\Builder\Loaders;
 use Gajus\Dindent;
@@ -79,6 +77,16 @@ class BuilderTest extends PHPUnit_Framework_TestCase {
 		$form = $this->builder->build([
 			['name' => 'name', 'type' => 'string', 'label' => 'Jméno'],
 		]);
+		$this->assertStringEqualsFileFixtures(__FUNCTION__, self::beautifierHtml(self::removeToken($form)));
+	}
+
+	public function testBuildSetValSimpleDefinition() {
+		$loader = new Loaders\DefinitionLoader();
+		$this->builder = new Builder($loader);
+		$form = $this->builder->build([
+			['name' => 'name', 'type' => 'string', 'label' => 'Jméno'],
+		]);
+		$form->setDefaults(['name' => 'Míša']);
 		$this->assertStringEqualsFileFixtures(__FUNCTION__, self::beautifierHtml(self::removeToken($form)));
 	}
 
