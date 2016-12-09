@@ -54,7 +54,10 @@ class Builder {
 	/** @var \SplObjectStorage */
 	private $entities;
 
-	public function __construct(Loaders\ILoader $loader) {
+	/** @var function(Builder:$arg) -> EntityForm */
+	private $formMake;
+
+	public function __construct(Loaders\ILoader $loader, $formMake = null) {
 		$this->entities = new \SplObjectStorage();
 		$this->loader = $loader;
 		$this->mapperContainer = new \Nette\ServiceLocator();
@@ -63,10 +66,17 @@ class Builder {
 		$this->mapperContainer->addService('date', new Mappers\DateMapper());
 		$this->mapperContainer->addService('id', new Mappers\IdMapper());
 		$this->mapperContainer->addService('boolean', new Mappers\BooleanMapper());
+		if (empty($formMake)) {
+			$formMake = function($arg) {
+				return new EntityForm($arg);
+			};
+		}
+		$this->formMake = $formMake;
 	}
 
 	public function build($entity) {
-		$form = new EntityForm($this);
+		$fn = $this->formMake;
+		$form = $fn($this);
 		$metadata = $this->loader->load(is_object($entity) ? get_class($entity) : $entity);
 
 		list($groups, $metadata) = self::splitByGroups($metadata);
