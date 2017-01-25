@@ -78,7 +78,25 @@ class EntityForm extends \Nette\Application\AppForm {
 	 * @return void
 	 */
 	protected function attached($presenter) {
+		// fill-in the form with HTTP data, preserve read-only value
+		if ($this->isSubmitted()) {
+			$preserved = [];
+			foreach ($this->getControls() as $control) {
+				if ($control->isDisabled()) {
+					$preserved[$control->name] = $control->value;
+				}
+			}
+		}
+
 		parent::attached($presenter);
+
+		// fill-in preserved read-only value.
+		if (isset($preserved)) {
+			foreach ($preserved as $name => $value) {
+				$this[$name]->value = $value;
+			}
+		}
+
 		if ($presenter instanceof \Nette\Application\Presenter) {
 			$this->builder->setDefaults($this);
 		}

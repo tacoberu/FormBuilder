@@ -151,7 +151,11 @@ class Builder {
 		}
 		$metadata = $this->loader->load($class);
 		$values = array();
+		$original = $form->getOriginal();
 		foreach ($metadata as $name => $meta) {
+			if ($form[$name]->isDisabled() && ! empty($original)) {
+				continue;
+			}
 			switch (true) {
 				case $form[$name] instanceof \Nette\Forms\FormControl:
 					$values[$name] = $this->getMapper($meta)->toPropertyValue($form[$name], $meta);
@@ -166,8 +170,6 @@ class Builder {
 		if ($form->hasErrors()) {
 			return null;
 		}
-
-		$original = $form->getOriginal();
 
 		// Skrze setDefaults() nepředal objekt, ale pole
 		if (is_array($original)) {
@@ -200,6 +202,7 @@ class Builder {
 						//~ throw new \LogicException("Cannot make instance of '{$class}'. Missing data for param of constructor: '{$param->getName()}'.");
 					}
 				}
+
 				$entity = $ref->newInstanceArgs($args);
 			} else {
 				$entity = $ref->newInstance();
