@@ -46,6 +46,9 @@ class BooleanMapper extends DefaultMapper {
 	 */
 	public function addFormControl(Builder\EntityForm $form, Builder\Metadata $meta) {
 		$input = $form->addCheckbox($meta->name, $meta->label);
+		if (isset($meta->custom['access']) && strtolower($meta->custom['access']) === 'readonly') {
+			$input->setDisabled();
+		}
 		$this->addConditions($input, $meta->conditions);
 		return $input;
 	}

@@ -46,6 +46,9 @@ class NumberMapper extends DefaultMapper {
 	 */
 	public function addFormControl(Builder\EntityForm $form, Builder\Metadata $meta) {
 		$input = $form->addText($meta->name, $meta->label);
+		if (isset($meta->custom['access']) && strtolower($meta->custom['access']) === 'readonly') {
+			$input->setDisabled();
+		}
 		$input->getControlPrototype()->type('number');
 		$input->addCondition(Builder\EntityForm::FILLED)
 				->addRule($meta->type === 'float' ? Builder\EntityForm::FLOAT : Builder\EntityForm::INTEGER);

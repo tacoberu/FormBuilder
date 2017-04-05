@@ -48,6 +48,9 @@ class StringMapper extends DefaultMapper {
 		$method = $meta->type === 'text' ? 'addTextArea' : 'addText';
 		$input = $form->$method($meta->name, $meta->label);
 		$this->addConditions($input, $meta->conditions);
+		if (isset($meta->custom['access']) && strtolower($meta->custom['access']) === 'readonly') {
+			$input->setDisabled();
+		}
 		return $input;
 	}
 }
