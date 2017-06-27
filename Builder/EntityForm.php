@@ -111,7 +111,13 @@ class EntityForm extends \Nette\Application\AppForm {
 	 */
 	public function __call($name, $args) {
 		if ($name === 'onSubmit') {
-			$entity = $this->builder->buildEntity($args[0]);
+			// Pokud na nějakém prvku máme vypnutou validaci, tak nejsem schopen zajistit, že mapování na objekt dopadne dobře.
+			// Mapování vypínám ve dvou případech: tlačítko cancel, a replikator
+			if ($this->submitted instanceof \Nette\Forms\SubmitButton && ! $this->submitted->getValidationScope()) {
+				$entity = $this->getOriginal();
+			} else {
+				$entity = $this->builder->buildEntity($args[0]);
+			}
 			if (!$entity) {
 				return;
 			}
