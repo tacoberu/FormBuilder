@@ -81,7 +81,7 @@ class EntityForm extends \Nette\Application\AppForm {
 		// fill-in the form with HTTP data, preserve read-only value
 		if ($this->isSubmitted()) {
 			$preserved = [];
-			foreach ($this->getControls() as $control) {
+			foreach ($this->getDirectControls() as $control) {
 				if ($control->isDisabled()) {
 					$preserved[$control->name] = $control->value;
 				}
@@ -125,4 +125,13 @@ class EntityForm extends \Nette\Application\AppForm {
 		}
 		return parent::__call($name, $args);
 	}
+
+	/**
+	 * Iterates over all form controls.
+	 * @return \ArrayIterator
+	 */
+	private function getDirectControls() {
+		return $this->getComponents(false, 'Nette\Forms\IFormControl');
+	}
+
 }
